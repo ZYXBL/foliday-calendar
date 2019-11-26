@@ -1,5 +1,10 @@
 
 <style scoped>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 .calendar {
     margin:auto;
     width: 100%;
@@ -72,13 +77,12 @@
     color: #444444;
 }
 .calendar td {
-    margin:2px !important;
-    padding:0px 0;
+    padding: 4px 0;
     width: 14.28571429%;
-    height:44px;
+    height: 44px;
     text-align: center;
     vertical-align: middle;
-    font-size:14px;
+    font-size: 14px;
     line-height: 125%;
     cursor: pointer;
     position: relative;
@@ -108,7 +112,7 @@
     color: #666;
 }
 .calendar td:not(.selected) span:not(.red):hover{
-    background:#f3f8fa;
+    background:#CCEDFA;
     color:#444;
 }
 .calendar td:not(.selected) span.red:hover{
@@ -119,8 +123,8 @@
     color:#ea6151;
 }
 .calendar td.selected span{
-    background-color: #5e7a88;
-    color: #fff;
+    /* background-color: #5e7a88; */
+    /* color: #fff; */
 }
 .calendar td .text{
     position: absolute;
@@ -210,6 +214,48 @@
     background-color: #5e7a88;
     color:#fff; 
 }
+
+.calendar .calendar-td:hover {
+    background: #CCEDFA;
+}
+
+.calendar .calendar-td.selected {
+    position: relative;
+    background: #CCEDFA;
+    color: #666;
+}
+.calendar .startSelected.selected {
+    background: #00A4E3;
+    color: #fff;
+}
+.calendar .endSelected.selected {
+    background: #00A4E3;
+    color: #fff;
+}
+.calendar .startSelected.selected span,
+.calendar .endSelected.selected span {
+    color: #fff;
+}
+
+.calendar .startSelected.selected::after,
+.calendar .endSelected.selected::after {
+    position: absolute;
+    content: '';
+    font-size: 0;
+    border: solid 3px #fff; 
+}
+.calendar .startSelected.selected::after {
+    left: 2px;
+    top: 2px;
+    border-color: #fff transparent transparent #fff;
+}
+.calendar .endSelected.selected::after {
+    right: 2px;
+    bottom: 2px;
+    border-color: #fff transparent transparent #fff;
+}
+
+
 </style>
 
 <template>
@@ -237,10 +283,10 @@
                 <!-- {{monthString}} -->
                 <div class="month">
                     <div class="month-inner" :style="{'top':-(this.month * 20)+'px'}">
-                        <span v-for="m in months" :key="m">{{m}}</span>
+                        <span v-for="m in months" :key="m">{{ year + '年' + m }}</span>
                     </div>
                 </div>
-                <div class="year">{{year}}</div>
+                <!-- <div class="year">{{year}}</div> -->
             </div>
         </div>
         <table cellpadding="5">
@@ -253,18 +299,34 @@
         <tr v-for="(day,k1) in days" :key="k1" style="{'animation-delay',(k1*30)+'ms'}">
             <td v-for="(child,k2) in day" 
                 :key="k2" 
-                :class="{'selected':child.selected,'disabled':child.disabled}" @click="select(k1,k2,$event)">
-                <template v-if="!child.disabled || showOtherMonth">
-                    <span :class="{'red': k2==0 || k2==6 || ((child.isLunarFestival ||child.isGregorianFestival) && lunar)}">
+                class="calendar-td"
+                :class="{
+                    'selected': child.selected, 
+                    'disabled': child.disabled,
+                    'startSelected': range && getFirstSelectDate(child),
+                    'endSelected': range && getEndSelectDate(child)
+                }" 
+                @click="select(k1, k2, $event)">
+                <slot name="date" 
+                      v-if="!child.disabled || showOtherMonth"
+                      :data="child"
+                      :date="`${year}-${month}-${child.day}`">
+                    <!-- <span :class="{'red': k2==0 || k2==6 || ((child.isLunarFestival ||child.isGregorianFestival) && lunar)}">
+                        {{ lunar ? child.isLunarFestival || child.isGregorianFestival ? child.lunar : child.day : child.day }}
+                    </span> -->
+                    <span>
                         {{ lunar ? child.isLunarFestival || child.isGregorianFestival ? child.lunar : child.day : child.day }}
                     </span>
                     <div class="text" v-if="child.eventName != undefined">
                         {{ child.eventName }}
                     </div>
+                    <slot slot="date-bottom"
+                          :data="child"
+                          :date="`${year}-${month}-${child.day}`"></slot>
                     <!-- <div class="text" :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">
                         {{ child.lunar }}
                     </div> -->
-                </template>
+                </slot>
             </td>
         </tr>
         </tbody>
@@ -352,7 +414,7 @@ export default {
         months:{
             type: Array,
             default:function(){
-                return window.navigator.language.toLowerCase() == "zh-cn"?['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                return window.navigator.language.toLowerCase() == "zh-cn" ? ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'] : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             }
         },
         // 自定义事件
@@ -419,7 +481,6 @@ export default {
     },
     mounted() {
         this.init()
-        console.log(this.days)
     },
     methods: {
         init(){
@@ -452,13 +513,27 @@ export default {
             }
             this.render(this.year, this.month)
         },
+        // 获取选取的第一天
+        getFirstSelectDate (day) {
+            if (this.range) {
+                const rangeBegin = this.rangeBegin
+                return rangeBegin[2] === day.day && rangeBegin[0] === this.year && rangeBegin[1] === this.month
+            }
+            // multiDays.
+        },
+        // 获取选取的最后一天
+        getEndSelectDate (day) {
+            if (this.range) {
+                const rangeEnd = this.rangeEnd
+                return rangeEnd[2] !== this.rangeBegin[2] && rangeEnd[2] === day.day && rangeEnd[0] === this.year && rangeEnd[1] === this.month
+            }
+        },
         // 渲染日期
         render(y, m) {
             let firstDayOfMonth = new Date(y, m, 1).getDay()         //当月第一天
             let lastDateOfMonth = new Date(y, m + 1, 0).getDate()    //当月最后一天
             let lastDayOfLastMonth = new Date(y, m, 0).getDate()     //最后一月的最后一天
             this.year = y
-            console.log(firstDayOfMonth, lastDateOfMonth, lastDayOfLastMonth)
             let seletSplit = this.value
             let i, line = 0,temp = [],nextMonthPushDays = 1
             for (i = 1; i <= lastDateOfMonth; i++) {
@@ -695,28 +770,42 @@ export default {
         // 上月
         prev(e) {
             e.stopPropagation()
+            const beginYear = ~~this.begin[0]
+            const beginMonth = ~~this.begin[1]
             if (this.month == 0) {
+                if (beginYear && beginYear < ~~this.year + 1) return
                 this.month = 11
                 this.year = parseInt(this.year) - 1
             } else {
+                if (beginYear && beginYear === ~~this.year) {
+
+                    if (beginMonth && beginMonth >= ~~this.month + 1) return
+                }
                 this.month = parseInt(this.month) - 1
             }
             this.render(this.year, this.month)
-            this.$emit('selectMonth',this.month+1,this.year)
-            this.$emit('prev',this.month+1,this.year)
+            this.$emit('selectMonth',this.month + 1, this.year)
+            this.$emit('prev',this.month + 1, this.year)
         },
         //  下月
         next(e) {
             e.stopPropagation()
+            const endYear = ~~this.end[0]
+            const endMonth = ~~this.end[1]
             if (this.month == 11) {
+                if (endYear && endYear < ~~this.year + 1) return
                 this.month = 0
                 this.year = parseInt(this.year) + 1
             } else {
+                if (endYear && endYear === ~~ this.year) {
+
+                    if (endMonth && endMonth <= ~~this.month + 1) return
+                }
                 this.month = parseInt(this.month) + 1
             }
             this.render(this.year, this.month)
-            this.$emit('selectMonth',this.month+1,this.year)
-            this.$emit('next',this.month+1,this.year)
+            this.$emit('selectMonth', this.month + 1, this.year)
+            this.$emit('next', this.month + 1, this.year)
         },
         // 选中日期
         select(k1, k2, e) {
@@ -789,20 +878,42 @@ export default {
         },
         changeYear(){
             if(this.yearsShow){
-                this.yearsShow=false
+                this.yearsShow = false
                 return false
             }
-            this.yearsShow=true
-            this.years=[];
+            this.yearsShow = true
+            this.years = [];
+            const beginYear = ~~this.begin[0]
+            const endYear = ~~this.end[0]
             for(let i=~~this.year-10;i<~~this.year+10;i++){
+                if (beginYear) {
+                    // 有限制开始年份
+                    if (beginYear > i) continue
+                }
+                if (endYear) {
+                    // 有限制结束年份
+                    if (endYear < i) continue
+                }
                 this.years.push(i)
             }
         },
         selectYear(value){
-            this.yearsShow=false
-            this.year=value
-            this.render(this.year,this.month)
-            this.$emit('selectYear',value)
+            this.yearsShow = false
+            this.year = value
+            const endYear = ~~this.end[0]
+            const endMonth = ~~this.end[1]
+            const beginYear = ~~this.begin[0]
+            const beginMonth = ~~this.begin[1]
+            if (endYear === ~~this.year) {
+                // 当前选中的年份是最后一年
+                if (endMonth < this.month) this.month = endMonth - 1
+            }
+            if (beginYear === ~~this.year) {
+                // 当前选中的年份是开始年份
+                if (beginMonth > this.month) this.month = beginMonth - 1
+            }
+            this.render(this.year, this.month)
+            this.$emit('selectYear', value)
         },
         // 返回今天
         setToday(){

@@ -22,7 +22,13 @@
                 showOtherMonth
                 @select="calendar1.select"
                 @selectMonth="calendar1.selectMonth"
-                @selectYear="calendar1.selectYear"></calendar>
+                @selectYear="calendar1.selectYear">
+                
+                <template slot="date"
+                          slot-scope='date'>
+                    {{ date.data.day }}
+                </template>    
+            </calendar>
             <button @click="changeEvents">异步更新Price</button>
             <button @click="calendar1.value=[2018,1,Math.floor(Math.random()*30+1)]">动态设置日期</button>
             <button @click="$refs.calendar1.setToday()">返回今天</button>
@@ -30,7 +36,13 @@
 
         <div>
             <span>多选/农历</span>
-            <calendar :range="calendar2.range" :lunar="calendar2.lunar" :value="calendar2.value" :begin="calendar2.begin" :end="calendar2.end" @select="calendar2.select"></calendar>
+            <calendar :range="calendar2.range" 
+                      :lunar="calendar2.lunar" 
+                      :value="calendar2.value" 
+                      :begin="calendar2.begin" 
+                      :end="calendar2.end" 
+                      :months="calendar2.months"
+                      @select="calendar2.select"></calendar>
         </div>
     </div>
 
@@ -96,6 +108,7 @@ export default {
                 range:true,
                 value:[[2017,12,1],[2019,2,16]], //默认日期
                 lunar:true, //显示农历
+                months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
                 begin:[2017,2,16], //可选开始日期
                 end:[2019,2,16], //可选结束日期
                 select(begin,end){
