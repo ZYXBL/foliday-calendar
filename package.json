@@ -4,7 +4,7 @@
   "description": "A Vue.js project",
   "author": "zyxbl <zy825692497@163.com>",
   "private": true,
-  "main": "./src/calendar.vue",
+  "main": "index.js",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
