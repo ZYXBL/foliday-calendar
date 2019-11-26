@@ -101,10 +101,11 @@
     display:block;
     max-width:40px;
     height:26px;
-    font-size: 16px;
+    font-size: 12px;
     line-height:26px;
     margin:0px auto;
     border-radius:20px;
+    color: #666;
 }
 .calendar td:not(.selected) span:not(.red):hover{
     background:#f3f8fa;
@@ -235,8 +236,8 @@
             <div class="calendar-info" @click.stop="changeYear">
                 <!-- {{monthString}} -->
                 <div class="month">
-                    <div class="month-inner" :style="{'top':-(this.month*20)+'px'}">
-                        <span v-for="m in months">{{m}}</span>
+                    <div class="month-inner" :style="{'top':-(this.month * 20)+'px'}">
+                        <span v-for="m in months" :key="m">{{m}}</span>
                     </div>
                 </div>
                 <div class="year">{{year}}</div>
@@ -245,22 +246,38 @@
         <table cellpadding="5">
         <thead>
             <tr>
-                <td v-for="week in weeks" class="week">{{week}}</td>
+                <td v-for="week in weeks" :key="week" class="week">{{week}}</td>
             </tr>
         </thead>
         <tbody>
-        <tr v-for="(day,k1) in days" style="{'animation-delay',(k1*30)+'ms'}">
-            <td v-for="(child,k2) in day" :class="{'selected':child.selected,'disabled':child.disabled}" @click="select(k1,k2,$event)">
-                <span :class="{'red':k2==0||k2==6||((child.isLunarFestival||child.isGregorianFestival) && lunar)}">{{child.day}}</span>
-                <div class="text" v-if="child.eventName!=undefined">{{child.eventName}}</div>
-                <div class="text" :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">{{child.lunar}}</div>
+        <tr v-for="(day,k1) in days" :key="k1" style="{'animation-delay',(k1*30)+'ms'}">
+            <td v-for="(child,k2) in day" 
+                :key="k2" 
+                :class="{'selected':child.selected,'disabled':child.disabled}" @click="select(k1,k2,$event)">
+                <template v-if="!child.disabled || showOtherMonth">
+                    <span :class="{'red': k2==0 || k2==6 || ((child.isLunarFestival ||child.isGregorianFestival) && lunar)}">
+                        {{ lunar ? child.isLunarFestival || child.isGregorianFestival ? child.lunar : child.day : child.day }}
+                    </span>
+                    <div class="text" v-if="child.eventName != undefined">
+                        {{ child.eventName }}
+                    </div>
+                    <!-- <div class="text" :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">
+                        {{ child.lunar }}
+                    </div> -->
+                </template>
             </td>
         </tr>
         </tbody>
         </table>
 
-        <div class="calendar-years" :class="{'show':yearsShow}">
-            <span v-for="y in years" @click.stop="selectYear(y)" :class="{'active':y==year}">{{y}}</span>
+        <div class="calendar-years" 
+             :class="{'show':yearsShow}">
+            <span v-for="y in years" 
+                 :key="y" 
+                 @click.stop="selectYear(y)" 
+                 :class="{'active':y==year}">
+                {{y}}
+            </span>
         </div>
  
     </div>
@@ -270,6 +287,10 @@
 import calendar from './calendar.js'
 export default {
     props: {
+        showOtherMonth: {
+            type: Boolean,
+            default: false
+        },
         // 多选模式
         multi: {
             type: Boolean,
@@ -398,6 +419,7 @@ export default {
     },
     mounted() {
         this.init()
+        console.log(this.days)
     },
     methods: {
         init(){
@@ -436,6 +458,7 @@ export default {
             let lastDateOfMonth = new Date(y, m + 1, 0).getDate()    //当月最后一天
             let lastDayOfLastMonth = new Date(y, m, 0).getDate()     //最后一月的最后一天
             this.year = y
+            console.log(firstDayOfMonth, lastDateOfMonth, lastDayOfLastMonth)
             let seletSplit = this.value
             let i, line = 0,temp = [],nextMonthPushDays = 1
             for (i = 1; i <= lastDateOfMonth; i++) {

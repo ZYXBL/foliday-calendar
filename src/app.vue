@@ -19,6 +19,7 @@
                 :end="calendar1.end" 
                 :weeks="calendar1.weeks" 
                 :months="calendar1.months" 
+                showOtherMonth
                 @select="calendar1.select"
                 @selectMonth="calendar1.selectMonth"
                 @selectYear="calendar1.selectYear"></calendar>
