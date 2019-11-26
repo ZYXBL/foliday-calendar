@@ -1,8 +1,8 @@
 {
-  "name": "vue-calendar",
+  "name": "foliday-calendar",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "ZEE.KIM <129@jinzhe.net>",
+  "author": "zyxbl <zy825692497@163.com>",
   "private": true,
   "main": "./src/calendar.vue",
   "scripts": {
