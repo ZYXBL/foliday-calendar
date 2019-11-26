@@ -1,4 +1,4 @@
-import FolidayCalendar from './src/calendar'
+import FolidayCalendar from './src/calendar.vue'
 
 export default {
     install: function (Vue, options) {

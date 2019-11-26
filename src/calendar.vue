@@ -477,7 +477,7 @@ export default {
     },
     watch:{
         events(){
-            this.render(this.year,this.month)
+            this.renderCalendar(this.year,this.month)
         },
         value(){
             this.init();
@@ -515,7 +515,7 @@ export default {
                     this.day = parseInt(this.value[2]) 
                 }
             }
-            this.render(this.year, this.month)
+            this.renderCalendar(this.year, this.month)
         },
         // 获取选取的第一天
         getFirstSelectDate (day) {
@@ -533,7 +533,7 @@ export default {
             }
         },
         // 渲染日期
-        render(y, m) {
+        renderCalendar(y, m) {
             let firstDayOfMonth = new Date(y, m, 1).getDay()         //当月第一天
             let lastDateOfMonth = new Date(y, m + 1, 0).getDate()    //当月最后一天
             let lastDayOfLastMonth = new Date(y, m, 0).getDate()     //最后一月的最后一天
@@ -787,7 +787,7 @@ export default {
                 }
                 this.month = parseInt(this.month) - 1
             }
-            this.render(this.year, this.month)
+            this.renderCalendar(this.year, this.month)
             this.$emit('selectMonth',this.month + 1, this.year)
             this.$emit('prev',this.month + 1, this.year)
             this.$emit('changeDate', this.year, this.month + 1)
@@ -808,7 +808,7 @@ export default {
                 }
                 this.month = parseInt(this.month) + 1
             }
-            this.render(this.year, this.month)
+            this.renderCalendar(this.year, this.month)
             this.$emit('selectMonth', this.month + 1, this.year)
             this.$emit('next', this.month + 1, this.year)
             this.$emit('changeDate', this.year, this.month + 1)
@@ -852,7 +852,7 @@ export default {
                     // console.log("选中日期",begin,end)
                     this.$emit('select',begin,end)
                 }
-                this.render(this.year, this.month)
+                this.renderCalendar(this.year, this.month)
             }else if (this.multi) {
                 // 如果已经选过则过滤掉
                 let filterDay=this.multiDays.filter(v => {
@@ -919,7 +919,7 @@ export default {
                 // 当前选中的年份是开始年份
                 if (beginMonth > this.month) this.month = beginMonth - 1
             }
-            this.render(this.year, this.month)
+            this.renderCalendar(this.year, this.month)
             this.$emit('selectYear', this.year, this.month + 1)
             this.$emit('changeDate', this.year, this.month + 1)
         },
@@ -929,7 +929,7 @@ export default {
             this.year = now.getFullYear()
             this.month = now.getMonth()
             this.day = now.getDate()
-            this.render(this.year,this.month)
+            this.renderCalendar(this.year,this.month)
             // 遍历当前日找到选中
             this.days.forEach(v => {
                 let day=v.find(vv => {
