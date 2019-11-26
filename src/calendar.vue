@@ -299,10 +299,10 @@
         <tr v-for="(day,k1) in days" :key="k1" style="{'animation-delay',(k1*30)+'ms'}">
             <td v-for="(child,k2) in day" 
                 :key="k2" 
-                class="calendar-td"
                 :class="{
                     'selected': child.selected, 
                     'disabled': child.disabled,
+                    'calendar-td': canChoice,
                     'startSelected': range && getFirstSelectDate(child),
                     'endSelected': range && getEndSelectDate(child)
                 }" 
@@ -350,6 +350,10 @@ import calendar from './calendar.js'
 export default {
     props: {
         showOtherMonth: {
+            type: Boolean,
+            default: false
+        },
+        canChoice: {
             type: Boolean,
             default: false
         },
@@ -786,6 +790,7 @@ export default {
             this.render(this.year, this.month)
             this.$emit('selectMonth',this.month + 1, this.year)
             this.$emit('prev',this.month + 1, this.year)
+            this.$emit('changeDate', this.year, this.month + 1)
         },
         //  下月
         next(e) {
@@ -806,9 +811,11 @@ export default {
             this.render(this.year, this.month)
             this.$emit('selectMonth', this.month + 1, this.year)
             this.$emit('next', this.month + 1, this.year)
+            this.$emit('changeDate', this.year, this.month + 1)
         },
         // 选中日期
         select(k1, k2, e) {
+            if (!this.canChoice) return
             if (e != undefined) e.stopPropagation()
                 // 日期范围
             if (this.range) {
@@ -913,7 +920,8 @@ export default {
                 if (beginMonth > this.month) this.month = beginMonth - 1
             }
             this.render(this.year, this.month)
-            this.$emit('selectYear', value)
+            this.$emit('selectYear', this.year, this.month + 1)
+            this.$emit('changeDate', this.year, this.month + 1)
         },
         // 返回今天
         setToday(){

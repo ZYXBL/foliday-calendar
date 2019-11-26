@@ -20,6 +20,7 @@
                 :weeks="calendar1.weeks" 
                 :months="calendar1.months" 
                 showOtherMonth
+                canChoice
                 @select="calendar1.select"
                 @selectMonth="calendar1.selectMonth"
                 @selectYear="calendar1.selectYear">
@@ -42,6 +43,7 @@
                       :begin="calendar2.begin" 
                       :end="calendar2.end" 
                       :months="calendar2.months"
+                      canChoice
                       @select="calendar2.select"></calendar>
         </div>
     </div>
