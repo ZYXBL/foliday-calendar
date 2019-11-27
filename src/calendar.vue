@@ -322,7 +322,7 @@
                     </div>
                     <slot slot="date-bottom"
                           :data="child"
-                          :date="`${year}-${month}-${child.day}`"></slot>
+                          :date="`${year}-${month + 1}-${child.day}`"></slot>
                     <!-- <div class="text" :class="{'isLunarFestival':child.isLunarFestival,'isGregorianFestival':child.isGregorianFestival}" v-if="lunar">
                         {{ child.lunar }}
                     </div> -->
