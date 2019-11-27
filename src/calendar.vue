@@ -310,7 +310,7 @@
                 <slot name="date" 
                       v-if="!child.disabled || showOtherMonth"
                       :data="child"
-                      :date="`${year}-${month}-${child.day}`">
+                      :date="`${year}-${month + 1}-${child.day}`">
                     <!-- <span :class="{'red': k2==0 || k2==6 || ((child.isLunarFestival ||child.isGregorianFestival) && lunar)}">
                         {{ lunar ? child.isLunarFestival || child.isGregorianFestival ? child.lunar : child.day : child.day }}
                     </span> -->
