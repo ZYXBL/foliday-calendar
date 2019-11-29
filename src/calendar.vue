@@ -884,7 +884,6 @@ export default {
                 this.today = [k1, k2]
                 this.$emit('select',[this.year,this.zero?this.zeroPad(this.month + 1):this.month + 1,this.zero?this.zeroPad(this.days[k1][k2].day):this.days[k1][k2].day])
             }
-            console.log(this.days)
         },
         clearSelect () {
             this.days.map(item => {
