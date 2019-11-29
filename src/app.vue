@@ -44,7 +44,10 @@
                       :end="calendar2.end" 
                       :months="calendar2.months"
                       canChoice
+                      ref="calendar2"
                       @select="calendar2.select"></calendar>
+
+                      <button @click="$refs.calendar2.clearSelect()">清空</button>
         </div>
     </div>
 

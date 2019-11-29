@@ -534,6 +534,8 @@ export default {
         },
         // 渲染日期
         renderCalendar(y, m) {
+            if (!y) y = this.year
+            if (!m) m = this.month
             let firstDayOfMonth = new Date(y, m, 1).getDay()         //当月第一天
             let lastDateOfMonth = new Date(y, m + 1, 0).getDate()    //当月最后一天
             let lastDayOfLastMonth = new Date(y, m, 0).getDate()     //最后一月的最后一天
@@ -882,6 +884,15 @@ export default {
                 this.today = [k1, k2]
                 this.$emit('select',[this.year,this.zero?this.zeroPad(this.month + 1):this.month + 1,this.zero?this.zeroPad(this.days[k1][k2].day):this.days[k1][k2].day])
             }
+            console.log(this.days)
+        },
+        clearSelect () {
+            this.days.map(item => {
+                item.map(vm => {
+                    vm.selected = false
+                })
+            })
+            this.$emit('clear')
         },
         changeYear(){
             if(this.yearsShow){
