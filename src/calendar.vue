@@ -779,7 +779,8 @@ export default {
             const beginYear = ~~this.begin[0]
             const beginMonth = ~~this.begin[1]
             if (this.month == 0) {
-                if (beginYear && beginYear < ~~this.year + 1) return
+                // 一月 判断开始年份是否等于当前年份，是则返回
+                if (beginYear && beginYear == ~~this.year) return
                 this.month = 11
                 this.year = parseInt(this.year) - 1
             } else {
@@ -888,7 +889,8 @@ export default {
         clearSelect () {
             this.days.map(item => {
                 item.map(vm => {
-                    vm.selected = false
+                    this.$set(vm, 'selected', false)
+                    // vm.selected = false
                 })
             })
             this.$emit('clear')
