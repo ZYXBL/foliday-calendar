@@ -401,6 +401,11 @@ export default {
                 return []
             }
         },
+        // 屏蔽的月份和日期
+        disabledMonthDay: {
+            type: Array,
+            default: () => []
+        },
         // 是否显示农历
         lunar: {
             type: Boolean,
@@ -591,6 +596,11 @@ export default {
                             options.disabled = true
                         }
                     }
+                    if (this.disabledMonthDay.length > 0) {
+                        if (this.disabledMonthDay.filter(v => {return this.month === v[0]-1 && i === v[1] }).length > 0) {
+                            options.disabled = true
+                        }
+                    }
                     temp[line].push(options)
                 }else if(this.multi){//多选
                     let options
@@ -609,6 +619,11 @@ export default {
                         }
                         if (this.disabled.length>0){
                             if (this.disabled.filter(v => {return this.year === v[0] && this.month === v[1]-1 && i === v[2] }).length>0) {
+                                options.disabled = true
+                            }
+                        }
+                        if (this.disabledMonthDay.length > 0) {
+                            if (this.disabledMonthDay.filter(v => {return this.month === v[0]-1 && i === v[1] }).length > 0) {
                                 options.disabled = true
                             }
                         }
@@ -659,6 +674,11 @@ export default {
                         }
                         if (this.disabled.length>0){
                             if (this.disabled.filter(v => {return this.year === v[0] && this.month === v[1]-1 && i === v[2] }).length>0) {
+                                options.disabled = true
+                            }
+                        }
+                        if (this.disabledMonthDay.length > 0) {
+                            if (this.disabledMonthDay.filter(v => {return this.month === v[0]-1 && i === v[1] }).length > 0) {
                                 options.disabled = true
                             }
                         }

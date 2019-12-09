@@ -43,6 +43,7 @@
                       :begin="calendar2.begin" 
                       :end="calendar2.end" 
                       :months="calendar2.months"
+                      :disabledMonthDay="calendar2.disabledMonthDay"
                       canChoice
                       ref="calendar2"
                       @select="calendar2.select"></calendar>
@@ -114,6 +115,7 @@ export default {
                 value:[[2017,12,1],[2019,2,16]], //默认日期
                 lunar:true, //显示农历
                 months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                disabledMonthDay: [[1, 1], [1, 24], [1, 25], [1, 26], [1, 27], [1, 28], [1, 29], [1, 30], [1, 31], [2, 1], [2, 2], [4, 4], [4, 5], [4, 6], [5, 1], [5, 2], [6, 25], [9, 30], [10, 1], [10, 2], [10, 3], [10, 4], [10, 5], [10, 6], [10, 7], [12, 31]],
                 begin:[2016,1,16], //可选开始日期
                 end:[2019,1,16], //可选结束日期
                 select(begin,end){
