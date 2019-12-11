@@ -25,10 +25,10 @@
                 @selectMonth="calendar1.selectMonth"
                 @selectYear="calendar1.selectYear">
                 
-                <template slot="date"
+                <!-- <template slot="date"
                           slot-scope='date'>
                     {{ date.data.day }}
-                </template>    
+                </template>     -->
             </calendar>
             <button @click="changeEvents">异步更新Price</button>
             <button @click="calendar1.value=[2018,1,Math.floor(Math.random()*30+1)]">动态设置日期</button>
@@ -94,10 +94,11 @@ export default {
                 weeks:['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
                 months:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 events:{
-                    '2017-7-7':'$408',
+                    '2017-07-07':'$408',
                     '2017-7-20':'$408',
                     '2017-7-21':'$460',
                     '2017-7-22':'$500',
+                    '2017-7-23':'$500'
                 },
                 select(value){
                     console.log(value.toString());

@@ -261,7 +261,7 @@
 <template>
     <div class="calendar">
         <div class="calendar-tools">
-            <span class="calendar-prev" @click="prev">
+            <span class="calendar-prev" @click.stop.prevent="prev">
                 <svg width="20" height="20" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g class="transform-group">
                     <g transform="scale(0.015625, 0.015625)">
@@ -270,7 +270,7 @@
                 </g>
                 </svg>
             </span>
-            <span class="calendar-next"  @click="next">
+            <span class="calendar-next"  @click.stop.prevent="next">
                 <svg width="20" height="20" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <g class="transform-group">
                     <g transform="scale(0.015625, 0.015625)">
@@ -482,7 +482,7 @@ export default {
     },
     watch:{
         events(){
-            this.renderCalendar(this.year,this.month)
+            this.renderCalendar(this.year, this.month)
         },
         value(){
             this.init();
@@ -783,19 +783,23 @@ export default {
                 isGregorianFestival:isGregorianFestival,
             }
         },
+        // 获取双数
+        getDouble (x) {
+            return x < 10 ? '0' + x : x
+        },
         // 获取自定义事件
         getEvents(y,m,d){
             if(Object.keys(this.events).length==0)return false;
-            let eventName=this.events[y+"-"+m+"-"+d]
-            let data={}
+            let eventName = this.events[y + "-" + m + "-" + d] || this.events[y + "-" + this.getDouble(m) + "-" + this.getDouble(d)]
+            let data = {}
             if(eventName!=undefined){
-                data.eventName=eventName
+                data.eventName = eventName
             }
             return data
         },
         // 上月
         prev(e) {
-            e.stopPropagation()
+            // e.stopPropagation()
             const beginYear = ~~this.begin[0]
             const beginMonth = ~~this.begin[1]
             if (this.month == 0) {
@@ -817,7 +821,7 @@ export default {
         },
         //  下月
         next(e) {
-            e.stopPropagation()
+            // e.stopPropagation()
             const endYear = ~~this.end[0]
             const endMonth = ~~this.end[1]
             if (this.month == 11) {
