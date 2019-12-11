@@ -11,8 +11,7 @@
         <div>
             <span>单选/英文/事件</span>
             <calendar
-                ref="calendar1"
-                :events="calendar1.events" 
+                ref="calendar1" 
                 :lunar="calendar1.lunar" 
                 :value="calendar1.value" 
                 :begin="calendar1.begin" 
@@ -43,6 +42,7 @@
                       :begin="calendar2.begin" 
                       :end="calendar2.end" 
                       :months="calendar2.months"
+                      :events="calendar2.events"
                       :disabledMonthDay="calendar2.disabledMonthDay"
                       canChoice
                       ref="calendar2"
@@ -119,6 +119,12 @@ export default {
                 disabledMonthDay: [[1, 1], [1, 24], [1, 25], [1, 26], [1, 27], [1, 28], [1, 29], [1, 30], [1, 31], [2, 1], [2, 2], [4, 4], [4, 5], [4, 6], [5, 1], [5, 2], [6, 25], [9, 30], [10, 1], [10, 2], [10, 3], [10, 4], [10, 5], [10, 6], [10, 7], [12, 31]],
                 begin:[2016,1,16], //可选开始日期
                 end:[2019,1,16], //可选结束日期
+                events:{
+                    '2017-12-11': '$408',
+                    '2018-01-20': '$408',
+                    '2018-01-21': '$408',
+                    '2018-01-22': '$408'
+                },
                 select(begin,end){
                     // console.log(begin.toString(),end.toString());
                 }

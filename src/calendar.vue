@@ -745,7 +745,7 @@ export default {
         },
         computedNextYear(){
             let value=this.year
-            if(this.month+1>11){
+            if(this.month + 1 > 11){
                 value++
             }
             return value
@@ -792,7 +792,8 @@ export default {
             if(Object.keys(this.events).length==0)return false;
             let eventName = this.events[y + "-" + m + "-" + d] || this.events[y + "-" + this.getDouble(m) + "-" + this.getDouble(d)]
             let data = {}
-            if(eventName!=undefined){
+            console.log(m, y, d)
+            if(eventName != undefined){
                 data.eventName = eventName
             }
             return data
@@ -851,7 +852,7 @@ export default {
                     this.rangeBeginTemp = this.rangeBegin
                     this.rangeEnd = [this.year, this.month, this.days[k1][k2].day]
                     this.rangeEndTemp = 0
-                    
+                    this.$emit('resetSelect', this.rangeBegin)
                 } else {
                     this.rangeEnd = [this.year, this.month,this.days[k1][k2].day]
                     this.rangeEndTemp = 1
