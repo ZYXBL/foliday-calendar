@@ -367,6 +367,11 @@ export default {
             type: Boolean,
             default: false
         },
+        // 范围模式下选择日期默认向后获取天数
+        defaultRangeDay: {
+            type: Number,
+            default: 0
+        },
         // 默认日期
         value: {
             type: Array,
@@ -792,7 +797,7 @@ export default {
             if(Object.keys(this.events).length==0)return false;
             let eventName = this.events[y + "-" + m + "-" + d] || this.events[y + "-" + this.getDouble(m) + "-" + this.getDouble(d)]
             let data = {}
-            console.log(m, y, d)
+            // console.log(m, y, d)
             if(eventName != undefined){
                 data.eventName = eventName
             }
@@ -852,7 +857,33 @@ export default {
                     this.rangeBeginTemp = this.rangeBegin
                     this.rangeEnd = [this.year, this.month, this.days[k1][k2].day]
                     this.rangeEndTemp = 0
-                    this.$emit('resetSelect', this.rangeBegin)
+                    if (this.defaultRangeDay > 0) {
+                        // 需要默认选中后面的日子
+                        this.rangeEnd[1] += 1
+                        const endDate = new Date(this.rangeEnd.join('/'))
+                        endDate.setDate(endDate.getDate() + this.defaultRangeDay)
+                        this.rangeEnd = [endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]
+                        let begin = []
+                        let end = []
+                        if(this.zero){
+                            this.rangeBegin.forEach((v,k)=>{
+                                if(k == 1) v = v + 1
+                                begin.push(this.zeroPad(v))
+                            })
+                            this.rangeEnd.forEach((v,k)=>{
+                                if(k == 1) v = v + 1
+                                end.push(this.zeroPad(v))
+                            })
+                        }else{
+                            begin = this.rangeBegin
+                            end = this.rangeEnd
+                        }
+                        // console.log(begin, end)
+                        this.rangeEndTemp = 1
+                        this.$emit('select', begin, end)
+                    } else {
+                        this.$emit('resetSelect', this.rangeBegin)
+                    }
                 } else {
                     this.rangeEnd = [this.year, this.month,this.days[k1][k2].day]
                     this.rangeEndTemp = 1
@@ -862,8 +893,8 @@ export default {
                         this.rangeEnd = this.rangeBeginTemp
                     }
                     // 小于10左边打补丁
-                    let begin=[]
-                    let end=[]
+                    let begin = []
+                    let end = []
                     if(this.zero){
                         this.rangeBegin.forEach((v,k)=>{
                             if(k==1)v=v+1
@@ -874,11 +905,11 @@ export default {
                             end.push(this.zeroPad(v))
                         })
                     }else{
-                        begin=this.rangeBegin
-                        end=this.rangeEnd
+                        begin = this.rangeBegin
+                        end = this.rangeEnd
                     }
-                    // console.log("选中日期",begin,end)
-                    this.$emit('select',begin,end)
+                    // console.log("选中日期", begin, end)
+                    this.$emit('select', begin, end)
                 }
                 this.renderCalendar(this.year, this.month)
             }else if (this.multi) {

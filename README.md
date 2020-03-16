@@ -85,6 +85,7 @@ showOtherMonth|Boolean|false|是否显示其他月份日期
 canChoice|Boolean|false|是否可选
 multi|Boolean|false|是否多选
 range|Boolean|false|是否范围模式
+defaultRangeDay|Number|0|在范围模式下选择第一个数据后，自动选择下一个天数的时间间隔
 value|Arrary|[]|默认日期
 begin|Arrary|[]|开始选择日期
 end|Arrary|[]|结束选择日期

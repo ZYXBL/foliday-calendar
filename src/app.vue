@@ -44,6 +44,7 @@
                       :months="calendar2.months"
                       :events="calendar2.events"
                       :disabledMonthDay="calendar2.disabledMonthDay"
+                      :defaultRangeDay="10"
                       canChoice
                       ref="calendar2"
                       @select="calendar2.select"></calendar>
